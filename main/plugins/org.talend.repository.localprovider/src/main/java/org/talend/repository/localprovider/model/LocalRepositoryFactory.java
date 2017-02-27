@@ -145,6 +145,7 @@ import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.AbstractEMFRepositoryFactory;
 import org.talend.core.repository.model.FolderHelper;
 import org.talend.core.repository.model.ILocalRepositoryFactory;
+import org.talend.core.repository.model.ILockBean;
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.VersionList;
@@ -164,7 +165,6 @@ import org.talend.repository.localprovider.exceptions.IncorrectFileException;
 import org.talend.repository.localprovider.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.utils.json.JSONArray;
 
 import orgomg.cwm.foundation.businessinformation.BusinessinformationPackage;
 
@@ -3478,9 +3478,8 @@ public class LocalRepositoryFactory extends AbstractEMFRepositoryFactory impleme
     }
 
     @Override
-    public JSONArray getAllRemoteLocks() {
-        // TODO Auto-generated method stub
-        return new JSONArray();
+    public List<ILockBean> getAllRemoteLocks() {
+        return new ArrayList<ILockBean>();
     }
 
     @Override
