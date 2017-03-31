@@ -84,6 +84,7 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.general.TalendNature;
 import org.talend.core.model.metadata.MetadataManager;
@@ -749,6 +750,14 @@ public class LocalRepositoryFactory extends AbstractEMFRepositoryFactory impleme
 
     @Override
     public Project createProject(Project projectInfor) throws PersistenceException {
+        RepositoryContext repCtx = getRepositoryContext();
+        User user = repCtx.getUser();
+        String password = repCtx.getClearPassword();
+        return createProject(user, password, projectInfor);
+    }
+
+    @Override
+    public Project createProject(User authUser, String authPassword, Project projectInfor) throws PersistenceException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProgressMonitor monitor = new NullProgressMonitor();
         String technicalLabel = Project.createTechnicalName(projectInfor.getLabel());
