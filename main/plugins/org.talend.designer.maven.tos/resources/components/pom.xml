@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.talend.studio</groupId>
-        <artifactId>studio-maven-repository-tos</artifactId>
-        <version>6.4.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
+	<parent>
+		<groupId>org.talend.studio</groupId>
+		<artifactId>studio-maven-repository-tos</artifactId>
+		<version>6.4.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
 	<artifactId>studio-components-dependencies</artifactId>
 	<packaging>pom</packaging>
 	<properties>
@@ -35,110 +36,52 @@
 		</repository>
 	</repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-salesforce-runtime</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-splunk</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-jira</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-snowflake</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-azurestorage</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>netsuite-runtime_2014_2</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>netsuite-runtime_2016_2</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.talend.components</groupId>
-			<artifactId>components-marketo</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>org.talend.components</groupId>
-            <artifactId>components-common</artifactId>
-            <version>${components.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.talend.components</groupId>
-            <artifactId>components-common-oauth</artifactId>
-            <version>${components.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.talend.components</groupId>
-            <artifactId>components-api</artifactId>
-            <version>${components.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>annotation</artifactId>
-            <version>2.4.0</version>
-        </dependency>
-		<dependency>
-			<groupId>org.eclipse.sisu</groupId>
-			<artifactId>org.eclipse.sisu.inject</artifactId>
-			<version>0.0.0.M2a</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
-        </dependency>
-	</dependencies>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>talend-opensource-snapshot</id>
+			<name>talend-opensource-snapshot</name>
+			<url>http://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceSnapshot/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>talend-opensource-release</id>
+			<name>talend-opensource-release</name>
+			<url>http://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceRelease/</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
+				<!-- this will create the mave repository for the application runtime 
+					resolution -->
+				<!-- you must specify the runtime artifacts if the are not part of dependencies 
+					of this pom. -->
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>2.0.0-TALEND</version>
+				<configuration>
+					<localRepositoryPath>${basedir}/../tmp/repository</localRepositoryPath>
+					<skipTestScopeForExtraArtifacts>true</skipTestScopeForExtraArtifacts>
+					<projectsDirectory>src/it</projectsDirectory>
+					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+				</configuration>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
+						<id>generate-maven-repo</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>install</goal>
 						</goals>
 						<configuration>
-							<includeScope>runtime</includeScope>
-							<outputDirectory>${basedir}/../tmp/repository</outputDirectory>
-							<useRepositoryLayout>true</useRepositoryLayout>
+							<extraArtifacts>
+								<extraArtifact>org.talend.components:components-salesforce-runtime:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:components-jira:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:components-splunk:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:components-snowflake:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:components-azurestorage:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:netsuite-runtime_2014_2:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:netsuite-runtime_2016_2:0.18.0-SNAPSHOT:jar</extraArtifact>
+								<extraArtifact>org.talend.components:components-marketo:0.18.0-SNAPSHOT:jar</extraArtifact>
+							</extraArtifacts>
+							<!-- <pomIncludes> <pomInclude>*/pom.xml</pomInclude> </pomIncludes> -->
 						</configuration>
 					</execution>
 				</executions>
